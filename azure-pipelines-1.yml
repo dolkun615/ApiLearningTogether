@@ -1,0 +1,22 @@
+
+stages:
+- stage: PostmanCollectionTests
+  displayName: "Postman Tests"
+  jobs:
+  - job: RunTests
+    displayName: "Run Postman Tests"
+  
+
+    - script: "npm install -g newman"
+      displayName: "Install Newman"
+
+    - script: "newman run ApiLearning.json -e ApiAutomationEnvironment.json --bail -e Environment.json --reporters cli,junit --reporter-junit-export Results/junitReport.xml"
+      displayName: "Run Postman Collection"
+
+    - task: publishTestResults@2
+      displayName: "Publish Test Results"
+      condition: succeededOrFailed()
+      inputs:
+        testResultsFiles: "**/*.xml"
+        searchFolder: "Results"
+        testRunTitle: "Newman Regression Tests"
