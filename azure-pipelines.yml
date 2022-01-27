@@ -1,19 +1,24 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
 
-trigger:
-- master
 
-pool:
-  vmImage: ubuntu-latest
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+stages:
+- stage: PostmanCollectionTests
+  displayName: "Postman Tests"
+  jobs:
+  - job: RunTests
+    displayName: "Run Postman Tests"
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+      - script: "npm install -g newman"
+      displayName: "Install Newman"
+
+    - script: "newman run https://api.getpostman.com/collections/14649430-46d35820-7eb8-4cf0-8922-5b0c864492ac?apikey=PMAK-61ad6f766491610046189217-8412300d51c350885009bebb4e541bc082 --bail -e Environment.json --reporters cli,junit --reporter-junit-export Results/junitReport.xml --ssl-client-cert-list D://a//_temp//$(ClientCertListFilename) --env-var web-vehicle-api-key=$(Web_Vehicle_Service_Api_Key)"
+      displayName: "Run Postman Collection"
+
+    - task: publishTestResults@2
+      displayName: "Publish Test Results"
+      condition: succeededOrFailed()
+      inputs:
+        testResultsFiles: "**/*.xml"
+        searchFolder: "Results"
+        testRunTitle: "Newman Regression Tests"
+
