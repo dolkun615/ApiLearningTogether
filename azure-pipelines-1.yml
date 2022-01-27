@@ -5,7 +5,7 @@ stages:
   jobs:
   - job: RunTests
     displayName: "Run Postman Tests"
-  
+    steps:
 
     - script: "npm install -g newman"
       displayName: "Install Newman"
