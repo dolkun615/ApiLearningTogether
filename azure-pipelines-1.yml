@@ -10,7 +10,7 @@ stages:
     - script: "npm install -g newman"
       displayName: "Install Newman"
 
-    - script: "newman run ApiLearning.json -e ApiAutomationEnvironment.json --bail -e Environment.json --reporters cli,junit --reporter-junit-export Results/junitReport.xml"
+    - script: "newman run ApiLearning.json -e ApiAutomationEnvironment.json --bail --reporters cli,junit --reporter-junit-export Results/junitReport.xml"
       displayName: "Run Postman Collection"
 
     - task: publishTestResults@2
